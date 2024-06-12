@@ -3,7 +3,7 @@
 #define STR 29
 #define COL 99
 
-void frame (char fiel[STR][COL]){
+void frame (char field[STR][COL], int *right_racket, int *left_racket){
 
   for (int i = 0; i < STR; i++){
 	for (int j = 0; j < COL; j++){
@@ -28,6 +28,14 @@ void frame (char fiel[STR][COL]){
   field[2][COL - 1] = '+';
   field[STR - 1][COL - 1] = '+';
 
+  field[*left_racket][1] = '[';
+  field[*left_racket + 1][1] = '[';
+  field[*left_racket - 1][1] = '[';
+
+  field[*right_racket][COL-2] = ']';
+  field[*right_racket + 1][COL-2] = ']';
+  field[*right_racket - 1][COL-2] = ']';
+
   for (int i = 0; i < STR; i++){
 	for (int j = 0; j < COL; j++){
 	    printf ("%c", field[i][j]);
@@ -39,9 +47,9 @@ void frame (char fiel[STR][COL]){
 int main (){
 	
 	char field[STR][COL];
-	frame (field[STR][COL]);
+	int left_racket = STR / 2, right_racket = STR / 2;
 
+	frame (*field, &right_racket, &left_racket);
 
-
-  return 0;
+return 0;
 }
