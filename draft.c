@@ -4,15 +4,6 @@
 #define STR 29
 #define COL 99
 
-void print(char field[STR][COL]){
-	for (int i = 0; i < STR; i++){
-	for (int j = 0; j < COL; j++){
-	    printf ("%c", field[i][j]);
-	}
-	  printf ("\n");
-  }
-}
-
 void frame (char field[STR][COL], int *right_racket, int *left_racket){
 
   for (int i = 0; i < STR; i++){
@@ -39,10 +30,10 @@ void frame (char field[STR][COL], int *right_racket, int *left_racket){
   field[STR - 1][COL - 1] = '+';
 }
 
-char racket(char field[STR][COL], int *right_racket, int *left_racket){
+int racket(char field[STR][COL], int *right_racket, int *left_racket){
 	char input = getch();
 
-	switch(input){
+	swich(input){
 		case 's':
 			*left_racket--;
 			break;
@@ -52,31 +43,66 @@ char racket(char field[STR][COL], int *right_racket, int *left_racket){
 		case 'k':
 			*right_racket--;
 			break;
-		case 'm':
+		case 'm': 
 			*right_racket++;
 			break;
 	}
 
-	field[*left_racket + 1][1] = '[';
-	field[*left_racket][1] = '[';
-	field[*left_racket - 1][1] = '[';
+	field[*left_racket][1] = ']';
+	field[*left_racket + 1][1] = ']';
+	field[*left_racket + 2][1] = ']';
+	field[*left_racket - 1][1] = ']';
+	field[*left_racket - 2][1] = ']';
 
-	field[*right_racket + 1][COL - 2] = '[';
-	field[*right_racket][COL - 2] = '[';
-	field[*right_racket - 1][COL - 2] = '[';
+	field[*right_racket][COL - 1] = '[';
+	field[*right_racket + 1][COL - 1] = '[';
+	field[*right_racket + 2][COL - 1] = '[';
+	field[*right_racket - 1][COL - 1] = '[';
+	field[*right_racket - 2][COL - 1] = '[';
 
 	return input;
+}
+
+void ball(char field[STR][COL], int right_racket, int left_racket, int *dir_x, int *dir_y, int *ball_x, int *ball_y){
+	if (((*ball_y) == 3) && ((*dir_x) == 1) && ((*dir_y) == -1)) 
+		*dir_y *= -1;
+	else if (((*ball_y) == 3) && ((*dir_x) == -1) && ((*dir_y) == -1))
+		*dir_y *= -1;
+	else if (((*ball_y) == (STR - 2)) && ((*dir_x) == -1) && ((*dir_y) == 1))
+		*dir_y *= -1;
+	else if (((*ball_y) == (STR - 2)) && ((*dir_x) == -1) && ((dir_y) == 1))
+		*dir_y *= -1;
+	else if ((*ball_x) == 2 && (*dir_x) == -1 && (*dir_y) == -1 &&
+			  ((*ball_ y) == left_racket || (*ball_y) == left_racket + 1 || (*ball_y) == left_racket + 2 ||
+			   (*ball_y) == left_racket -1 ||  (*ball_y) == left_racket -2))
+		*dir_x *= -1;
+	else if ((*ball_x) == 2 && (*dir_x) == -1 (*dir_y) == 1 && 
+			((*ball_ y) == left_racket || (*ball_y) == left_racket + 1 || (*ball_y) == left_racket + 2 ||
+			   (*ball_y) == left_racket -1 ||  (*ball_y) == left_racket -2))
+		*dir_x *= -1;
+	else if ((*ball_x) == COL-3 && (*dir_x) == 1 (*dir_y) == -1 && 
+			((*ball_ y) == right_racket || (*ball_y) == right_racket + 1 || (*ball_y) == right_racket + 2 ||
+			   (*ball_y) == right_racket -1 ||  (*ball_y) == right_racket -2))
+		*dir_x *= -1;
+	else if ((*ball_x) == COL-3 && (*dir_x) == 1 (*dir_y) == 1 && 
+			((*ball_ y) == right_racket || (*ball_y) == right_racket + 1 || (*ball_y) == right_racket + 2 ||
+			   (*ball_y) == right_racket -1 ||  (*ball_y) == right_racket -2))
+		*dir_x *= -1;
+
+	*ball_y += *dir_y;
+	*ball_x += *dir_x;
+
+	field[*ball_y][*ball_x] = 'o';
 }
 
 int main (){
 	
 	char field[STR][COL];
 	int left_racket = STR / 2, right_racket = STR / 2;
+	int dir_x = 1, dir_y = 1;
+	int ball_x, ball_y;
 
-	for(int i = 0; i < 50; i++){
-		racket (*field, *right_racket, *left_racket);
-		frame (*field, *right_racket, *left_racket);
-		print(*field);
-}
-return 0;
+
+	
+	return 0;
 }
