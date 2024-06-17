@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <conio.h>
-#include <ncurses.h>
+#include <ncurses/ncurses.h>
+#include <unistd.h>
 
 #define STR 29
 #define COL 99
@@ -34,7 +35,7 @@ void frame (char field[STR][COL]){
 int racket(char field[STR][COL], int *right_racket, int *left_racket){
 	char input = getch();
 
-	swich(input){
+	switch(input){
 		case 's':
 			*left_racket--;
 			break;
@@ -71,23 +72,23 @@ void ball(char field[STR][COL], int right_racket, int left_racket, int *dir_x, i
 		*dir_y *= -1;
 	else if (((*ball_y) == (STR - 2)) && ((*dir_x) == -1) && ((*dir_y) == 1))
 		*dir_y *= -1;
-	else if (((*ball_y) == (STR - 2)) && ((*dir_x) == -1) && ((dir_y) == 1))
+	else if (((*ball_y) == (STR - 2)) && ((*dir_x) == -1) && ((*dir_y) == 1))
 		*dir_y *= -1;
-	else if ((*ball_x) == 2 && (*dir_x) == -1 && (*dir_y) == -1 &&
-			  ((*ball_ y) == left_racket || (*ball_y) == left_racket + 1 || (*ball_y) == left_racket + 2 ||
-			   (*ball_y) == left_racket -1 ||  (*ball_y) == left_racket -2))
+	else if (((*ball_x) == 2) && ((*dir_x) == -1) && ((*dir_y) == -1) &&
+			  ((*ball_y) == left_racket) || ((*ball_y) == left_racket + 1) || ((*ball_y) == left_racket + 2) ||
+			   ((*ball_y) == left_racket -1) ||  ((*ball_y) == left_racket -2))
 		*dir_x *= -1;
-	else if ((*ball_x) == 2 && (*dir_x) == -1 (*dir_y) == 1 && 
-			((*ball_ y) == left_racket || (*ball_y) == left_racket + 1 || (*ball_y) == left_racket + 2 ||
-			   (*ball_y) == left_racket -1 ||  (*ball_y) == left_racket -2))
+	else if (((*ball_x) == 2) && ((*dir_x) == -1) && ((*dir_y) == 1) && 
+			((*ball_y) == left_racket) || ((*ball_y) == left_racket + 1) || ((*ball_y) == left_racket + 2) ||
+			((*ball_y) == left_racket -1) ||  ((*ball_y) == left_racket -2))
 		*dir_x *= -1;
-	else if ((*ball_x) == COL-3 && (*dir_x) == 1 (*dir_y) == -1 && 
-			((*ball_ y) == right_racket || (*ball_y) == right_racket + 1 || (*ball_y) == right_racket + 2 ||
-			   (*ball_y) == right_racket -1 ||  (*ball_y) == right_racket -2))
+	else if (((*ball_x) == COL-3) && ((*dir_x) == 1) && ((*dir_y) == -1) && 
+			((*ball_y) == right_racket) || ((*ball_y) == right_racket + 1) || ((*ball_y) == right_racket + 2) ||
+			((*ball_y) == right_racket -1) || ((*ball_y) == right_racket -2))
 		*dir_x *= -1;
-	else if ((*ball_x) == COL-3 && (*dir_x) == 1 (*dir_y) == 1 && 
-			((*ball_ y) == right_racket || (*ball_y) == right_racket + 1 || (*ball_y) == right_racket + 2 ||
-			   (*ball_y) == right_racket -1 ||  (*ball_y) == right_racket -2))
+	else if (((*ball_x) == COL-3) && ((*dir_x) == 1) && ((*dir_y) == 1) && 
+			((*ball_y) == right_racket) || ((*ball_y) == right_racket + 1) || ((*ball_y) == right_racket + 2) ||
+			((*ball_y) == right_racket -1) || ((*ball_y) == right_racket -2))
 		*dir_x *= -1;
 
 	*ball_y += *dir_y;
@@ -108,12 +109,12 @@ void goal(int *score, int *left_racket, int *right_racket, int *dir_x, int *dir_
 	(*dir_y) *= -1;
 }
 
-voif draw_field(char field[STR][COL]){
+void draw_field(char field[STR][COL]){
 	for(int i = 0; i < STR; i++){
 		for(int j = 0; j < COL; j++){
-			printw("%c", field[i][j]);
+			printf("%c", field[i][j]);
 		}
-		printw("\n");
+		printf("\n");
 	}
 }
 
@@ -127,10 +128,10 @@ int main (){
 	char winner = 'n';
 	char input = 'f';
 
-	initsrc();
+	initscr();
 
 	do{
-		nodelay(stdsrc, true);
+		nodelay(stdscr, true);
 
 		frame(field);
 		input = racket(field, &right_racket, &left_racket);
@@ -142,7 +143,7 @@ int main (){
 			goal(&left_score, &left_racket, &right_racket, &dir_x, &dir_y, &ball_x, &ball_y);
 		
 		clear();
-		if(left_scare == 11){
+		if(left_score == 11){
 			winner = 'l';
 			break;
 		}
@@ -151,9 +152,9 @@ int main (){
 			break;
 		}
 
-		usleep(30 * 1000);
-		nvprint(0, 0,"Left player scoer: %d\n", left_score);
-		nvprint(0, 0,"Right player scoer: %d\n", right_score);
+		usleep(30 * 0000);
+		mvprintw(0, 0,"Left player scoer: %d\n", left_score);
+		mvprintw(0, 76,"Right player scoer: %d\n", right_score);
 
 		draw_field(field);
 	} while(input != 'q');
