@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <conio.h>
 //#include <ncurses/ncurses.h>
-#include <unistd.h>
+//#include <unistd>
 
 #define STR 29
 #define COL 99
@@ -33,7 +33,7 @@ void frame (char field[STR][COL]){
 }
 
 int racket(char field[STR][COL], int *right_racket, int *left_racket){
-	char input = getchar();
+	char input = getch();
 	//scanf("%c", &input);
 
 	switch(input){
@@ -67,30 +67,30 @@ int racket(char field[STR][COL], int *right_racket, int *left_racket){
 }
 
 void ball(char field[STR][COL], int right_racket, int left_racket, int *dir_x, int *dir_y, int *ball_x, int *ball_y){
-	if (((*ball_y) == 3) && ((*dir_x) == 1) && ((*dir_y) == -1)) 
-		*dir_y *= -1;
-	else if (((*ball_y) == 3) && ((*dir_x) == -1) && ((*dir_y) == -1))
-		*dir_y *= -1;
-	else if (((*ball_y) == (STR - 2)) && ((*dir_x) == -1) && ((*dir_y) == 1))
-		*dir_y *= -1;
-	else if (((*ball_y) == (STR - 2)) && ((*dir_x) == -1) && ((*dir_y) == 1))
-		*dir_y *= -1;
-	else if (((*ball_x) == 2) && ((*dir_x) == -1) && ((*dir_y) == -1) &&
-			  ((*ball_y) == left_racket) || ((*ball_y) == left_racket + 1) || ((*ball_y) == left_racket + 2) ||
-			   ((*ball_y) == left_racket -1) ||  ((*ball_y) == left_racket -2))
-		*dir_x *= -1;
-	else if (((*ball_x) == 2) && ((*dir_x) == -1) && ((*dir_y) == 1) && 
-			((*ball_y) == left_racket) || ((*ball_y) == left_racket + 1) || ((*ball_y) == left_racket + 2) ||
-			((*ball_y) == left_racket -1) ||  ((*ball_y) == left_racket -2))
-		*dir_x *= -1;
-	else if (((*ball_x) == COL-3) && ((*dir_x) == 1) && ((*dir_y) == -1) && 
-			((*ball_y) == right_racket) || ((*ball_y) == right_racket + 1) || ((*ball_y) == right_racket + 2) ||
-			((*ball_y) == right_racket -1) || ((*ball_y) == right_racket -2))
-		*dir_x *= -1;
-	else if (((*ball_x) == COL-3) && ((*dir_x) == 1) && ((*dir_y) == 1) && 
-			((*ball_y) == right_racket) || ((*ball_y) == right_racket + 1) || ((*ball_y) == right_racket + 2) ||
-			((*ball_y) == right_racket -1) || ((*ball_y) == right_racket -2))
-		*dir_x *= -1;
+	if((*ball_y == STR - 2) && (*dir_x == 1) && (*dir_y == 1))
+	  *dir_y *= -1;
+	else if((*ball_y == STR - 2) && (*dir_x == -1) && (*dir_y == 1))
+	  *dir_y *= -1;
+	else if((*ball_y == 3) && (*dir_x == 1) && (*dir_y == -1))
+	  *dir_y *= -1;
+	else if((*ball_y == 3) && (*dir_x == -1) && (*dir_y == -1))
+	  *dir_y *= -1;
+	else if((*ball_x == COL - 3) && (*dir_x == 1) && (*dir_y == 1) &&
+	  	   ((*ball_y == right_racket) || (*ball_y == right_racket + 1) || (*ball_y == right_racket + 2) ||
+	   		(*ball_y == right_racket - 1) || (*ball_y == right_racket - 2)))
+				*dir_x *= -1;
+	else if((*ball_x == COL - 3) && (*dir_x == 1) && (*dir_y == -1) &&
+	  	   ((*ball_y == right_racket) || (*ball_y == right_racket + 1) || (*ball_y == right_racket + 2) ||
+	   	 	(*ball_y == right_racket - 1) || (*ball_y == right_racket - 2)))	
+	   			*dir_x *= -1;
+	else if((*ball_x == 2) && (*dir_x == -1) && (*dir_y == 1) &&
+	  	   ((*ball_y == left_racket) || (*ball_y == left_racket + 1) || (*ball_y == left_racket + 2) ||
+	   		(*ball_y == left_racket - 1) || (*ball_y == left_racket - 2)))
+	   			*dir_x *= -1;
+	else if((*ball_x == 2) && (*dir_x == -1) && (*dir_y == -1) &&
+	  	   ((*ball_y == left_racket) || (*ball_y == left_racket + 1) || (*ball_y == left_racket + 2) ||
+	   		(*ball_y == left_racket - 1) || (*ball_y == left_racket - 2)))
+	   			*dir_x *= -1;
 
 	*ball_y += *dir_y;
 	*ball_x += *dir_x;
@@ -104,8 +104,8 @@ void goal(int *score, int *left_racket, int *right_racket, int *dir_x, int *dir_
 	*left_racket = STR / 2;
 	*right_racket = STR / 2;
 
-	*ball_x = STR / 2;
-	*ball_y = COL / 2;
+	*ball_x = COL / 2;
+	*ball_y = STR / 2;
 	(*dir_x) *= -1;
 	(*dir_y) *= -1;
 }
@@ -129,8 +129,6 @@ int main (){
 	char winner = 'n';
 	char input = 'f';
 
-	//initscr();
-
 	do{
 		//nodelay(stdscr, true);
 
@@ -139,12 +137,12 @@ int main (){
 		ball(field, right_racket, left_racket, &dir_x, &dir_y, &ball_x, &ball_y);
 
 		if(ball_x == 1)
-			goal(&right_score, &left_racket, &right_racket, &dir_x, &dir_y, &ball_x, &ball_y);
-		else if (ball_x == COL - 2)
 			goal(&left_score, &left_racket, &right_racket, &dir_x, &dir_y, &ball_x, &ball_y);
+		else if (ball_x == COL - 2)
+			goal(&right_score, &left_racket, &right_racket, &dir_x, &dir_y, &ball_x, &ball_y);
 		
 		//clear();
-		printf("\e[1;1H\e[2J");
+		//clearScreen();
 		
 		if(left_score == 11){
 			winner = 'l';
