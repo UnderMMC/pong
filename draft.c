@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <conio.h>
-#include <ncurses/ncurses.h>
+//#include <ncurses/ncurses.h>
 #include <unistd.h>
 
 #define STR 29
@@ -16,7 +16,7 @@ void frame (char field[STR][COL]){
 		else if (j == 0 || j == COL - 1){
 		    field[i][j] = '|';
 		}
-		else if (j == (COL-1) / 2)
+		else if (j == (COL + 1) / 2)
 			field[i][j] = '.';
 		else
 		    field[i][j] = ' ';
@@ -33,20 +33,21 @@ void frame (char field[STR][COL]){
 }
 
 int racket(char field[STR][COL], int *right_racket, int *left_racket){
-	char input = getch();
+	char input = getchar();
+	//scanf("%c", &input);
 
 	switch(input){
 		case 's':
-			*left_racket--;
+			(*left_racket)--;
 			break;
 		case 'x':
-			*left_racket++;
+			(*left_racket)++;
 			break;
 		case 'k':
-			*right_racket--;
+			(*right_racket)--;
 			break;
 		case 'm': 
-			*right_racket++;
+			(*right_racket)++;
 			break;
 	}
 
@@ -56,11 +57,11 @@ int racket(char field[STR][COL], int *right_racket, int *left_racket){
 	field[*left_racket - 1][1] = ']';
 	field[*left_racket - 2][1] = ']';
 
-	field[*right_racket][COL - 1] = '[';
-	field[*right_racket + 1][COL - 1] = '[';
-	field[*right_racket + 2][COL - 1] = '[';
-	field[*right_racket - 1][COL - 1] = '[';
-	field[*right_racket - 2][COL - 1] = '[';
+	field[*right_racket][COL - 2] = '[';
+	field[*right_racket + 1][COL - 2] = '[';
+	field[*right_racket + 2][COL - 2] = '[';
+	field[*right_racket - 1][COL - 2] = '[';
+	field[*right_racket - 2][COL - 2] = '[';
 
 	return input;
 }
@@ -123,15 +124,15 @@ int main (){
 	char field[STR][COL];
 	int left_racket = STR / 2, right_racket = STR / 2;
 	int dir_x = 1, dir_y = 1;
-	int ball_x, ball_y;
+	int ball_x = COL / 2, ball_y = STR / 2;
 	int left_score = 0, right_score = 0;
 	char winner = 'n';
 	char input = 'f';
 
-	initscr();
+	//initscr();
 
 	do{
-		nodelay(stdscr, true);
+		//nodelay(stdscr, true);
 
 		frame(field);
 		input = racket(field, &right_racket, &left_racket);
@@ -142,7 +143,9 @@ int main (){
 		else if (ball_x == COL - 2)
 			goal(&left_score, &left_racket, &right_racket, &dir_x, &dir_y, &ball_x, &ball_y);
 		
-		clear();
+		//clear();
+		printf("\e[1;1H\e[2J");
+		
 		if(left_score == 11){
 			winner = 'l';
 			break;
@@ -152,14 +155,14 @@ int main (){
 			break;
 		}
 
-		usleep(30 * 0000);
-		mvprintw(0, 0,"Left player scoer: %d\n", left_score);
-		mvprintw(0, 76,"Right player scoer: %d\n", right_score);
+		//usleep(30 * 0000);
+		printf("Left player scoer: %d\n", left_score);
+		printf("Right player scoer: %d\n", right_score);
 
 		draw_field(field);
 	} while(input != 'q');
 
-	endwin();
+	//endwin();
 
 	if(winner == 'l'){
 		printf("Left player WIN!");
